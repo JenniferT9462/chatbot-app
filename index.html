@@ -40,24 +40,59 @@
       </div>
 
       <!-- chatbot reply area -->
-      <div class="card shadow border mb-4 rounded-2 text-secondary p-3">
+      <div class="card shadow border mb-4 rounded-2 text-secondary p-3 shadow">
         <div class="card-body">
           <h5 class="card-title">Chatbot Reply</h5>
-          <p class="card-text" id="chatbot-reply">Type a question in the input area...</p>
+          <p class="card-text" id="chatbot-reply">
+            Type a question in the input area...
+          </p>
         </div>
       </div>
-
 
       <!-- Image Generator -->
       <div class="container-fluid mb-4">
         <h2>Generate an Image</h2>
-        <input id="img-prompt" type="text" placeholder="Describe an image...">
+        <input id="img-prompt" type="text" placeholder="Describe an image..." />
         <button id="img-btn" class="btn btn-info btn-sm">Generate Image</button>
-        <br>
-        <img id="output-img" src="" style="max-width: 300px; margin-top: 10px;"/>
-      </div>
+        <br />
 
-      
+        <div
+          class="card shadow border mb-4 rounded-2 text-secondary p-3 shadow"
+        >
+          <div class="card-body">
+            <h5 class="card-title">Generated Image...</h5>
+            <img
+              id="output-img"
+              class="card-img"
+              src=""
+              style="max-width: 300px; margin-top: 10px"
+            />
+            
+          </div>
+        </div>
+        
+
+      <!-- Step 32 -  MadLibs -->
+      <div class="container-fluid mb-4">
+        <h3>Mad Lib Generator</h3>
+        <input id="name-input" placeholder="Enter a name" />
+        <input id="activity-input" placeholder="Enter an activity" />
+        <select id="mood-select">
+          <option value="happy">Happy</option>
+          <option value="scary">Scary</option>
+          <option value="funny">Funny</option>
+        </select>
+        <button id="madlib-btn" class="btn btn-info btn-sm">
+          Generate Story
+        </button>
+        <div
+        
+          class="p-2 border border-2 rounded-2 mt-4 shadow card"
+        >
+        <h5 class="card-title">Madlib Story...</h5>
+        <div class="card-body" id="madlib-output"></div>
+      </div>
+      </div>
     </div>
 
     <!-- Scripts -->

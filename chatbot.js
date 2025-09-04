@@ -116,6 +116,74 @@ function sendToModel() {
 // TODO: Add a custom response display for reply
 function displayResponse() {}
 
+//====== MadLib Generator ======
+onEvent("madlib-btn", "click", function () {
+  console.log("Madlib Button Clicked!");
+  getMadlib();
+});
+
+// Function to fetch from model for Madlib
+function getMadlib() {
+  // Get user inputs
+  let name = getValue("name-input");
+  let activity = getValue("activity-input");
+  let mood = getValue("mood-select");
+
+  // Change background & text color based on mood
+  if (mood === "scary") {
+    setProperty("madlib-output", "background", "black");
+    setProperty("madlib-output", "color", "orange");
+  } else if (mood === "happy") {
+    setProperty("madlib-output", "background", "pink");
+    setProperty("madlib-output", "color", "purple");
+  } else {
+    // default styling for other moods
+    setProperty("madlib-output", "background", "yellow");
+    setProperty("madlib-output", "color", "blue");
+  }
+
+  //Template literal for prompt
+  userPrompt = `Write a short ${mood} story about ${name} who loves to ${activity}.`;
+  console.log("Mad Lib Prompt:", userPrompt);
+
+  // Async function
+  async function query(data) {
+    const response = await fetch(
+      "https://router.huggingface.co/v1/chat/completions",
+      {
+        headers: {
+          Authorization: `Bearer ${HF_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
+    const result = await response.json();
+    return result;
+  }
+
+  query({
+    messages: [
+      {
+        role: "user",
+        content: userPrompt,
+      },
+    ],
+    model: "meta-llama/Llama-3.1-8B-Instruct:fireworks-ai",
+  }).then((response) => {
+    console.log(JSON.stringify(response));
+
+    // Update botReply variable to response content
+    story = response.choices[0].message.content;
+    console.log(story);
+
+    // Render the reply in the output area
+    setText("madlib-output", story);
+    
+  });
+}
+
 //======Image generator functions======
 
 // Event handler for img-btn
