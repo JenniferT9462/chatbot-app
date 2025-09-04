@@ -3,8 +3,10 @@ console.log("Hello from chatbot.js");
 // Global Variables
 let botReply = "";
 let userPrompt = "";
+let systemPrompt = "";
+let imagePrompt = "";
 
-setText("chatbot-reply", "Test Message");
+// setText("chatbot-reply", "Test Message");
 
 // Event Handler for the submit-btn
 onEvent("submit-btn", "click", function () {
@@ -41,13 +43,28 @@ onEvent("submit-btn", "click", function () {
 });
 
 // Event Handler for the HuggingFace button
-onEvent("askModel", "click", function () {
-  sendToModel();
-});
+// onEvent("askModel", "click", function () {
+//   sendToModel();
+// });
 
 // Fetch from HuggingFace function
 function sendToModel() {
   console.log("sendToModel called");
+
+  // Get Selected role
+  let roleChoice = getValue("role-select");
+
+  // Decide prompt based on role
+  if (roleChoice === "friendly") {
+    systemPrompt = "You as a kind assistant who explains concepts simply.";
+  } else if (roleChoice === "emoji") {
+    systemPrompt = "Reply using only emojis that match the user's message.";
+  } else if (roleChoice === "oneword") {
+    systemPrompt = "Reply with only one word.";
+  } else if (roleChoice === "markdown") {
+    systemPrompt = "Always reply in Markdown format with bold headings.";
+  }
+
   async function query(data) {
     const response = await fetch(
       "https://router.huggingface.co/v1/chat/completions",
@@ -66,6 +83,11 @@ function sendToModel() {
 
   query({
     messages: [
+      // Step - 32 -  Role-based prompts
+      {
+        role: "system",
+        content: systemPrompt,
+      },
       {
         role: "user",
         content: userPrompt,
@@ -91,4 +113,76 @@ function sendToModel() {
   });
 }
 
+// TODO: Add a custom response display for reply
 function displayResponse() {}
+
+//======Image generator functions======
+
+// Event handler for img-btn
+onEvent("img-btn", "click", async function () {
+  console.log("Generate Image Clicked!");
+
+  imagePrompt = getValue("img-prompt");
+  console.log("Image Prompt: ", imagePrompt);
+
+  async function query(data) {
+    const response = await fetch(
+      "https://router.huggingface.co/together/v1/images/generations",
+      {
+        headers: {
+          Authorization: `Bearer ${HF_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
+
+    // Check if the response is not a valid image
+    if (!response.ok) {
+      const errorBody = await response.json();
+      console.error("API Error:", errorBody);
+      // You can also display this to the user
+      alert(
+        "Error generating image: " + errorBody.detail ||
+          "An unknown error occurred."
+      );
+      return null;
+    }
+
+    // Since the API returns JSON, we parse it as JSON
+    const result = await response.json();
+    return result;
+  }
+
+  query({
+    prompt: imagePrompt,
+    response_format: "base64",
+    model: "black-forest-labs/FLUX.1-dev",
+  }).then((result) => {
+    // If the API call failed, result will be null
+    if (!result) {
+      return;
+    }
+
+    // Check for the expected data structure
+    if (result.data && result.data[0] && result.data[0].b64_json) {
+      const base64Image = result.data[0].b64_json;
+
+      // Convert the base64 string back into a Blob
+      const byteCharacters = atob(base64Image);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "image/png" });
+
+      // Use the Blob to create a URL
+      const imageUrl = URL.createObjectURL(blob);
+      document.getElementById("output-img").src = imageUrl;
+    } else {
+      console.error("No valid image data found in API response.");
+    }
+  });
+});
