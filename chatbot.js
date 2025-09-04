@@ -1,25 +1,28 @@
 console.log("Hello from chatbot.js");
+
+// Global Variables
 let botReply = "";
+let userPrompt = "";
 
 setText("chatbot-reply", "Test Message");
 
 // Event Handler for the submit-btn
 onEvent("submit-btn", "click", function () {
   console.log("Submit Button Clicked!");
-  const input = getValue("chatbot-input");
-  console.log(input);
-
-  if (input === "") {
+  userPrompt = getValue("chatbot-input");
+  if (userPrompt === "") {
     setText("chatbot-reply", "⚠️ Please enter something!");
     setProperty("chatbot-reply", "color", "red");
   } else {
     setText("chatbot-reply", "Thinking...");
     setProperty("chatbot-reply", "color", "green");
-    sendToModel();
   }
+
+  console.log("User Prompt: ", userPrompt);
+  sendToModel();
 });
 
-// Event Handler for the HuggingFace button 
+// Event Handler for the HuggingFace button
 onEvent("askModel", "click", function () {
   sendToModel();
 });
@@ -47,22 +50,27 @@ function sendToModel() {
     messages: [
       {
         role: "user",
-        content: "How are you? 😊",
+        content: userPrompt,
       },
     ],
     model: "meta-llama/Llama-3.1-8B-Instruct:fireworks-ai",
   }).then((response) => {
     console.log(JSON.stringify(response));
-    // Step 17
+    
+    // Step 17 - breaking up the Model response
     console.log(response.choices);
     console.log(response.choices[0]);
     console.log(response.choices[0].message);
     console.log(response.choices[0].message.content);
+
+    // Update botReply variable to response content
     botReply = response.choices[0].message.content;
     console.log(botReply);
+
+    // Render the reply in the output area
+    setText("chatbot-reply", botReply);
+    setProperty("chatbot-reply", "color", "purple");
   });
-};
-
-function displayResponse() {
-
 }
+
+function displayResponse() {}
