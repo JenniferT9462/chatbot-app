@@ -233,7 +233,7 @@ This part is for the Mad Libs game. We have three input areas: one for a `name`,
 ```
 
 ### **The Image Generator Code**
-With the image generator, you will need to search for a text-to-image model on HUgging Face. Then, get the jJavaScript -> fetch...code snippet like we did for the text generation model. You will then add that to your event handler for the image button. 
+With the image generator, you will need to search for a text-to-image model on HUgging Face. Then, get the javaScript -> fetch...code snippet like we did for the text generation model. You will then add that to your event handler for the image button. 
 
 1. **HTML**
 ```html
