@@ -175,6 +175,8 @@ This part is for the Mad Libs game. We have three input areas: one for a `name`,
 <input id="activity-input" placeholder="Enter an activity" />
 <select id="mood-select">
   <option value="happy">Happy</option>
+  <option value="scary">Scary</option>
+  <option value="funny">Funny</option>
 </select>
 <button id="madlib-btn">Generate Story</button>
 
