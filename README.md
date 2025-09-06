@@ -121,6 +121,7 @@ This is the most important part\! Open `chatbot.js` and paste in the code. Let's
     ```
 The `query()` function sends data to the AI. The `messages` array is like a conversation script: we tell the AI its **role** (system) and then give it the user's question (user). The AI processes this and sends back a response, which we then display on the page.
 
+---
 
 ## Extra Challenges
 
@@ -162,6 +163,8 @@ The `query()` function sends data to the AI. The `messages` array is like a conv
         content: systemPrompt,
     },
 ```
+---
+
 ### The Mad Libs Section
 
 This part is for the Mad Libs game. We have three input areas: one for a `name`, one for an `activity`, and a dropdown for the `mood`.
@@ -206,6 +209,26 @@ This part is for the Mad Libs game. We have three input areas: one for a `name`,
     ```
 
     We use a **template literal** (the backticks `` ` ``) to easily put the user's answers (`${name}`, `${activity}`, etc.) directly into a sentence to send to the AI.
+
+---
+
+### Combining Madlibs and different styles
+
+- We can add conditionals to determine what style to use based on the user's mood choice. Add this to the `getMadlib()` function after getting the values of the inputs:
+```js
+  // Change background & text color based on mood
+  if (mood === "scary") {
+    setProperty("madlib-output", "background", "black");
+    setProperty("madlib-output", "color", "orange");
+  } else if (mood === "happy") {
+    setProperty("madlib-output", "background", "pink");
+    setProperty("madlib-output", "color", "purple");
+  } else {
+    // default styling for other moods
+    setProperty("madlib-output", "background", "yellow");
+    setProperty("madlib-output", "color", "blue");
+  }
+```
 
 ### **The Image Generator Code**
 
