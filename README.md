@@ -231,8 +231,34 @@ This part is for the Mad Libs game. We have three input areas: one for a `name`,
 ```
 
 ### **The Image Generator Code**
+With the image generator, you will need to search for a text-to-image model on HUgging Face. Then, get the jJavaScript -> fetch...code snippet like we did for the text generation model. You will then add that to your event handler for the image button. 
 
-1.  **Event Handler**: This waits for the `img-btn` to be clicked.
+1. **HTML**
+```html
+<!-- Image Generator -->
+  <div class="container-fluid mb-4">
+    <h2>Generate an Image </h2>
+    <input id="img-prompt" type="text" placeholder="Describe an image..." />
+    <button id="img-btn" class="btn btn-info btn-sm">Generate Image</button>
+        <br />
+
+    <div
+      class="card shadow border mb-4 rounded-2 text-secondary p-3 shadow"
+        >
+      <div class="card-body">
+        <h5 class="card-title">Generated Image...</h5>
+        <img
+          id="output-img"
+          class="card-img"
+          src=""
+          style="max-width: 300px; margin-top: 10px"
+        />
+            
+      </div>
+    </div>
+```
+        
+2.  **Event Handler**: This waits for the `img-btn` to be clicked.
 
     ```javascript
     onEvent("img-btn", "click", async function () {
@@ -241,19 +267,69 @@ This part is for the Mad Libs game. We have three input areas: one for a `name`,
     });
     ```
 
-2.  **Displaying the Image**: The response from the AI is a **Base64 string**, which is a long string of letters and numbers that represents the image data. The code in the `.then()` part converts this string into an actual image that your browser can display.
+2.  **Displaying the Image**: The response from the AI is a **Base64 string**, which is a long string of letters and numbers that represents the image data. The code in the `.then()` part converts this string into an actual image that your browser can display. This is what worked for me:
+```js
+async function query(data) {
+    const response = await fetch(
+      "https://router.huggingface.co/together/v1/images/generations",
+      {
+        headers: {
+          Authorization: `Bearer ${HF_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
 
-    ```javascript
-    query({
-      prompt: imagePrompt,
-      response_format: "base64",
-      model: "black-forest-labs/FLUX.1-dev",
-    }).then((result) => {
+    // Check if the response is not a valid image
+    if (!response.ok) {
+      const errorBody = await response.json();
+      console.error("API Error:", errorBody);
+      // You can also display this to the user
+      alert(
+        "Error generating image: " + errorBody.detail ||
+          "An unknown error occurred."
+      );
+      return null;
+    }
+
+    // Since the API returns JSON, we parse it as JSON
+    const result = await response.json();
+    return result;
+  }
+
+  query({
+    prompt: imagePrompt,
+    response_format: "base64",
+    model: "black-forest-labs/FLUX.1-dev",
+  }).then((result) => {
+    // If the API call failed, result will be null
+    if (!result) {
+      return;
+    }
+
+    // Check for the expected data structure
+    if (result.data && result.data[0] && result.data[0].b64_json) {
       const base64Image = result.data[0].b64_json;
-      const imageUrl = URL.createObjectURL(new Blob([/* ... */], { type: "image/png" }));
-      document.getElementById("output-img").src = imageUrl; // Set the image source.
-    });
-    ```
 
+      // Convert the base64 string back into a Blob
+      const byteCharacters = atob(base64Image);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "image/png" });
 
+      // Use the Blob to create a URL
+      const imageUrl = URL.createObjectURL(blob);
+      document.getElementById("output-img").src = imageUrl;
+    } else {
+      console.error("No valid image data found in API response.");
+    }
+  });
+```
+
+    
 And that's it\! When you're done, save all your files and open `index.html` in your web browser to see your project in action.
