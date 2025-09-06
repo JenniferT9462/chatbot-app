@@ -42,13 +42,9 @@ onEvent("submit-btn", "click", function () {
   }
 });
 
-// Event Handler for the HuggingFace button
-// onEvent("askModel", "click", function () {
-//   sendToModel();
-// });
-
 // Fetch from HuggingFace function
 function sendToModel() {
+  // Proof of Life
   console.log("sendToModel called");
 
   // Get Selected role
@@ -109,7 +105,7 @@ function sendToModel() {
 
     // Render the reply in the output area
     setText("chatbot-reply", botReply);
-    setProperty("chatbot-reply","color", "purple");
+    setProperty("chatbot-reply", "color", "purple");
   });
 }
 
@@ -125,7 +121,7 @@ onEvent("madlib-btn", "click", function () {
 // Function to fetch from model for Madlib
 function getMadlib() {
   // Get user inputs
-  let name = getValue("name-input"); 
+  let name = getValue("name-input");
   let activity = getValue("activity-input");
   let mood = getValue("mood-select");
 
@@ -180,7 +176,6 @@ function getMadlib() {
 
     // Render the reply in the output area
     setText("madlib-output", story);
-    
   });
 }
 
