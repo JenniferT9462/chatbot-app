@@ -109,7 +109,7 @@ function sendToModel() {
 
     // Render the reply in the output area
     setText("chatbot-reply", botReply);
-    setProperty("chatbot-reply", "color", "purple");
+    setProperty("chatbot-reply","color", "purple");
   });
 }
 
@@ -125,7 +125,7 @@ onEvent("madlib-btn", "click", function () {
 // Function to fetch from model for Madlib
 function getMadlib() {
   // Get user inputs
-  let name = getValue("name-input");
+  let name = getValue("name-input"); 
   let activity = getValue("activity-input");
   let mood = getValue("mood-select");
 
