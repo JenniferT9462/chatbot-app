@@ -136,8 +136,7 @@ The `query()` function sends data to the AI. The `messages` array is like a conv
     <option value="markdown">Markdown Formatter</option>
 </select>
 ```
-- In `chatbot.js` make a global variable for the system prompt: `let systemPrompt = "";`
-- 
+- In `chatbot.js` make a global variable for the system prompt: `let systemPrompt = "";` 
 - Inside `sendToModel` function declare a variable for the user's role choice:
 ```js
  // Get Selected role
@@ -233,7 +232,7 @@ This part is for the Mad Libs game. We have three input areas: one for a `name`,
 ```
 
 ### **The Image Generator Code**
-With the image generator, you will need to search for a text-to-image model on HUgging Face. Then, get the javaScript -> fetch...code snippet like we did for the text generation model. You will then add that to your event handler for the image button. 
+With the image generator, you will need to search for a text-to-image model on Hugging Face. Then, get the javaScript -> fetch...code snippet like we did for the text generation model. You will then add that to your event handler for the image button. 
 
 1. **HTML**
 ```html
